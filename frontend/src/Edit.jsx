@@ -5,6 +5,7 @@ import axios from 'axios';
 function EditUser() {
   const { id } = useParams();
   const navigate = useNavigate();
+    const [alertMessage, setAlertMessage] = useState("");
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -14,22 +15,36 @@ function EditUser() {
 
   useEffect(() => {
     axios.get(`http://localhost:5000/api/users/get/${id}`)
+
       .then(res => setFormData(res.data))
       .catch(err => console.error(err));
   }, [id]);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    axios.put(`http://localhost:5000/users/update/${id}`, formData)
-      .then(() => {
-        alert("User updated!");
-        navigate('/');
-      })
-      .catch(err => console.error(err));
-  };
+const handleSubmit = (e) => {
+  e.preventDefault();
+
+  axios
+    .put(`http://localhost:5000/api/users/update/${id}`, formData)
+    .then(() => {
+      setAlertMessage("User edited successfully!");
+
+      // alert hide after 3 sec
+      setTimeout(() => {
+        setAlertMessage("");
+        navigate('/admin'); // navigate AFTER alert starts clearing
+      }, 3000);
+    })
+    .catch(err => console.error(err));
+};
 
   return (
     <div className="container mt-5">
+       {alertMessage && (
+                <div className="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+                    {alertMessage}
+                    <button type="button" className="btn-close" onClick={() => setAlertMessage("")}></button>
+                </div>
+            )}
       <div className="row justify-content-center">
         <div className="col-md-6">
           <div className="card shadow border-0" style={{ borderRadius: '15px' }}>

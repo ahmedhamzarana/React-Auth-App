@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 
-function Fetch() {
+function Admin() {
     const [users, setUsers] = useState([]);
     const [alertMessage, setAlertMessage] = useState("");
     const fetchUsers = async () => {
@@ -113,4 +113,4 @@ function Fetch() {
     );
 }
 
-export default Fetch;
+export default Admin;
