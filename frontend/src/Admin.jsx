@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 function Admin() {
     const [users, setUsers] = useState([]);
     const [alertMessage, setAlertMessage] = useState("");
+    const navigate = useNavigate();
+
     const fetchUsers = async () => {
         try {
             const response = await axios.get(`http://localhost:5000/api/users/all`);
@@ -15,14 +17,11 @@ function Admin() {
     };
 
     const deleteUsers = async (userId) => {
-
+        if (!window.confirm("Are you sure you want to delete this user?")) return;
         try {
             await axios.delete(`http://localhost:5000/api/users/delete/${userId}`);
-
             setAlertMessage("User deleted successfully!");
-
             setUsers(users.filter(u => u._id !== userId));
-
             setTimeout(() => setAlertMessage(""), 3000);
         } catch (err) {
             console.error('Error deleting user:', err);
@@ -33,74 +32,92 @@ function Admin() {
         fetchUsers();
     }, []);
 
-    const navigate = useNavigate();
     return (
-        <div className="container mt-5">
-            {/* Success Alert */}
-            {alertMessage && (
-                <div className="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
-                    {alertMessage}
-                    <button type="button" className="btn-close" onClick={() => setAlertMessage("")}></button>
-                </div>
-            )}
+        <div className="bg-light min-vh-100 py-5">
+            <div className="container">
+                
+                {/* Alert Notification */}
+                {alertMessage && (
+                    <div className="alert alert-success border-0 shadow-sm alert-dismissible fade show mb-4" role="alert">
+                        <i className="bi bi-check-circle-fill me-2"></i> {alertMessage}
+                        <button type="button" className="btn-close" onClick={() => setAlertMessage("")}></button>
+                    </div>
+                )}
 
-            <div className="row align-items-center mb-4">
-                <div className="col">
-                    <h2 className="fw-bold text-secondary">User Management</h2>
-                    <p className="text-muted small">Manage your application users and their roles.</p>
+                {/* Header Section */}
+                <div className="row align-items-center mb-4">
+                    <div className="col">
+                        <h3 className="fw-bold text-dark mb-1">User Management</h3>
+                        <p className="text-muted mb-0">Overview of all registered accounts and roles.</p>
+                    </div>
+                    <div className="col-auto">
+                        <Link className="btn btn-primary rounded-pill px-4 shadow-sm" to="/register">
+                            <span className="me-1">+</span> Create User
+                        </Link>
+                    </div>
                 </div>
-                <div className="col-auto">
-                    <Link className="btn btn-primary shadow-sm" to="/create">
-                        <i className="bi bi-plus-lg me-2"></i>Create New User
-                    </Link>
-                </div>
-            </div>
 
-            <div className="card shadow-sm border-0" style={{ borderRadius: '12px' }}>
-                <div className="card-body p-0">
+                {/* Stats Summary (Extra Aesthetic touch) */}
+                <div className="row mb-4 g-3">
+                    <div className="col-md-3">
+                        <div className="card border-0 shadow-sm p-3">
+                            <small className="text-muted fw-bold text-uppercase">Total Users</small>
+                            <h4 className="fw-bold mb-0">{users.length}</h4>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Table Card */}
+                <div className="card border-0 shadow-sm border-radius-lg overflow-hidden" style={{ borderRadius: '15px' }}>
                     <div className="table-responsive">
                         <table className="table table-hover align-middle mb-0">
-                            <thead className="table-light">
-                                <tr className="text-muted small text-uppercase">
-                                    <th className="ps-4" scope="col">Name</th>
-                                    <th scope="col">Email</th>
-                                    <th scope="col">Role</th>
-                                    <th scope="col">Status</th>
-                                    <th className="text-end pe-4" scope="col">Actions</th>
+                            <thead className="bg-white border-bottom">
+                                <tr>
+                                    <th className="ps-4 py-3 text-muted small fw-bold text-uppercase">User Info</th>
+                                    <th className="py-3 text-muted small fw-bold text-uppercase">Role</th>
+                                    <th className="py-3 text-muted small fw-bold text-uppercase">Status</th>
+                                    <th className="py-3 text-muted small fw-bold text-uppercase text-end pe-4">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody className="bg-white">
                                 {users.map((u) => (
                                     <tr key={u._id}>
-                                        <td className="ps-4">
-                                            <div className="fw-bold text-dark">{u.name}</div>
+                                        <td className="ps-4 py-3">
+                                            <div className="d-flex align-items-center">
+                                                <div className="avatar me-3 bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center fw-bold" style={{ width: '42px', height: '42px' }}>
+                                                    {u.name.charAt(0).toUpperCase()}
+                                                </div>
+                                                <div>
+                                                    <div className="fw-bold text-dark mb-0">{u.name}</div>
+                                                    <div className="text-muted small">{u.email}</div>
+                                                </div>
+                                            </div>
                                         </td>
-                                        <td className="text-muted small">{u.email}</td>
                                         <td>
-                                            <span className="badge rounded-pill bg-info text-dark">{u.role}</span>
+                                            <span className="badge rounded-pill bg-light text-dark border px-3">
+                                                {u.role}
+                                            </span>
                                         </td>
                                         <td>
-                                            <span className="badge bg-success-subtle text-success border border-success-subtle">
-                                                {u.status}
+                                            <span className={`badge rounded-pill px-3 ${u.status === 'active' ? 'bg-success-subtle text-success' : 'bg-secondary-subtle text-secondary'}`}>
+                                                ● {u.status || 'Active'}
                                             </span>
                                         </td>
                                         <td className="text-end pe-4">
-                                            <div className="btn-group">
-                                                <button
-                                                    onClick={() => {
-                                                        navigate(`/edit/${u._id}`);
-                                                    }}
-                                                    className="btn btn-outline-primary btn-sm px-3"
-                                                >
-                                                    Edit
-                                                </button>
-                                                <button
-                                                    onClick={() => deleteUsers(u._id)}
-                                                    className="btn btn-outline-danger btn-sm px-3"
-                                                >
-                                                    Delete
-                                                </button>
-                                            </div>
+                                            <button 
+                                                onClick={() => navigate(`/edit/${u._id}`)}
+                                                className="btn btn-sm btn-outline-primary border-0 me-2 rounded-circle"
+                                                title="Edit"
+                                            >
+                                                ✏️
+                                            </button>
+                                            <button 
+                                                onClick={() => deleteUsers(u._id)}
+                                                className="btn btn-sm btn-outline-danger border-0 rounded-circle"
+                                                title="Delete"
+                                            >
+                                                🗑️
+                                            </button>
                                         </td>
                                     </tr>
                                 ))}

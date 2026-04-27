@@ -28,10 +28,9 @@ const handleSubmit = (e) => {
     .then(() => {
       setAlertMessage("User edited successfully!");
 
-      // alert hide after 3 sec
       setTimeout(() => {
         setAlertMessage("");
-        navigate('/admin'); // navigate AFTER alert starts clearing
+        navigate('/admin');
       }, 3000);
     })
     .catch(err => console.error(err));
