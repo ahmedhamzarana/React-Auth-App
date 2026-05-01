@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
 function UserDashboard() {
-  // User ka personal data (e.g., My Tasks, My Products, or My Profile)
   const [items, setItems] = useState([
     { id: 1, title: "Design Landing Page", status: "In Progress", date: "24 April" },
     { id: 2, title: "Fix Navbar Bug", status: "Completed", date: "22 April" },
@@ -12,7 +11,6 @@ function UserDashboard() {
     <div className="bg-light min-vh-100 py-5">
       <div className="container">
         
-        {/* Welcome Section */}
         <div className="row mb-5">
           <div className="col-lg-8">
             <h2 className="fw-bold">Hello, Zeeshan! 👋</h2>
@@ -47,7 +45,6 @@ function UserDashboard() {
             </div>
           </div>
 
-          {/* User's List Card (Read/Update/Delete) */}
           <div className="col-md-8">
             <div className="card border-0 shadow-sm overflow-hidden">
               <div className="card-header bg-white py-3 border-0">

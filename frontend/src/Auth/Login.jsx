@@ -48,7 +48,6 @@ function Login() {
         localStorage.setItem('user', JSON.stringify(user));
         localStorage.setItem('role', user?.role || 'user');
 
-        // 🔥 navbar update trigger
         window.dispatchEvent(new Event("storage"));
 
         navigate(user?.role === 'admin' ? '/admin' : '/', { replace: true });

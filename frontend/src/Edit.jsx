@@ -99,7 +99,6 @@ const handleSubmit = (e) => {
                     </select>
                   </div>
                 </div>
-                {/* Add Role/Status dropdowns here similar to your Create UI */}
                 <div className="d-flex gap-2 mt-4">
                   <button type="submit" className="btn btn-primary flex-grow-1">Save Changes</button>
                   <Link to="/" className="btn btn-light border">Cancel</Link>

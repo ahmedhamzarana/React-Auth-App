@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 function Navbar() {
   const navigate = useNavigate();
-  const location = useLocation(); // Active link highlight karne ke liye
+  const location = useLocation();
 
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [user, setUser] = useState(
@@ -26,7 +26,6 @@ function Navbar() {
     navigate('/login');
   };
 
-  // Helper function for active link styling
   const isActive = (path) => location.pathname === path ? "active fw-bold border-bottom border-primary" : "";
 
   return (
