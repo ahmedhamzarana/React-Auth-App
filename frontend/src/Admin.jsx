@@ -5,11 +5,18 @@ import { Link, useNavigate } from 'react-router-dom';
 function Admin() {
     const [users, setUsers] = useState([]);
     const [alertMessage, setAlertMessage] = useState("");
+    const token = localStorage.getItem("token");
     const navigate = useNavigate();
 
     const fetchUsers = async () => {
         try {
-            const response = await axios.get(`http://localhost:5000/api/users/all`);
+            const response = await axios.get(`http://localhost:5000/api/users/all`,
+                {
+                    headers:{
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
             setUsers(response.data);
         } catch (err) {
             console.error('Error fetching users:', err);
@@ -17,9 +24,15 @@ function Admin() {
     };
 
     const deleteUsers = async (userId) => {
-        if (!window.confirm("Are you sure you want to delete this user?")) return;
         try {
-            await axios.delete(`http://localhost:5000/api/users/delete/${userId}`);
+            await axios.delete(`http://localhost:5000/api/users/delete/${userId}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+
+            );
             setAlertMessage("User deleted successfully!");
             setUsers(users.filter(u => u._id !== userId));
             setTimeout(() => setAlertMessage(""), 3000);

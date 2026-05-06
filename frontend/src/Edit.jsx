@@ -5,7 +5,9 @@ import axios from 'axios';
 function EditUser() {
   const { id } = useParams();
   const navigate = useNavigate();
-    const [alertMessage, setAlertMessage] = useState("");
+  const [alertMessage, setAlertMessage] = useState("");
+  const token = localStorage.getItem("token");
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -14,36 +16,47 @@ function EditUser() {
   });
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/api/users/get/${id}`)
+    axios.get(`http://localhost:5000/api/users/get/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    )
 
       .then(res => setFormData(res.data))
       .catch(err => console.error(err));
   }, [id]);
 
-const handleSubmit = (e) => {
-  e.preventDefault();
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-  axios
-    .put(`http://localhost:5000/api/users/update/${id}`, formData)
-    .then(() => {
-      setAlertMessage("User edited successfully!");
+    axios
+      .put(`http://localhost:5000/api/users/update/${id}`, 
+        formData,{
+          headers:{
+            Authorization: `Bearer ${token}`
+          }
+        })
+      .then(() => {
+        setAlertMessage("User edited successfully!");
 
-      setTimeout(() => {
-        setAlertMessage("");
-        navigate('/admin');
-      }, 3000);
-    })
-    .catch(err => console.error(err));
-};
+        setTimeout(() => {
+          setAlertMessage("");
+          navigate('/admin');
+        }, 3000);
+      })
+      .catch(err => console.error(err));
+  };
 
   return (
     <div className="container mt-5">
-       {alertMessage && (
-                <div className="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
-                    {alertMessage}
-                    <button type="button" className="btn-close" onClick={() => setAlertMessage("")}></button>
-                </div>
-            )}
+      {alertMessage && (
+        <div className="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+          {alertMessage}
+          <button type="button" className="btn-close" onClick={() => setAlertMessage("")}></button>
+        </div>
+      )}
       <div className="row justify-content-center">
         <div className="col-md-6">
           <div className="card shadow border-0" style={{ borderRadius: '15px' }}>
@@ -52,33 +65,33 @@ const handleSubmit = (e) => {
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                   <label className="form-label small fw-bold">Full Name</label>
-                  <input 
-                    type="text" 
-                    className="form-control bg-light border-0" 
+                  <input
+                    type="text"
+                    className="form-control bg-light border-0"
                     value={formData.name}
-                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   />
                 </div>
                 <div className="mb-3">
                   <label className="form-label small fw-bold">Email</label>
-                  <input 
-                    type="email" 
-                    className="form-control bg-light border-0" 
+                  <input
+                    type="email"
+                    className="form-control bg-light border-0"
                     value={formData.email}
-                    onChange={(e) => setFormData({...formData, email: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   />
                 </div>
                 <div className="row">
                   {/* Role Selection */}
                   <div className="col-md-6 mb-3">
                     <label className="form-label fw-semibold small">Role</label>
-                    <select 
-                    value={formData.role}
-                      name="role" 
-                      className="form-select bg-light border-0 py-2" 
-                      onChange={(e) => setFormData({...formData, role: e.target.value})}
+                    <select
+                      value={formData.role}
+                      name="role"
+                      className="form-select bg-light border-0 py-2"
+                      onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                     >
-                        <option value="select role" selected disabled>Select</option>
+                      <option value="select role" selected disabled>Select</option>
                       <option value="admin">Admin</option>
                       <option value="user">User</option>
                     </select>
@@ -87,13 +100,13 @@ const handleSubmit = (e) => {
                   {/* Status Selection */}
                   <div className="col-md-6 mb-3">
                     <label className="form-label fw-semibold small">Status</label>
-                    <select 
-                      name="status" 
+                    <select
+                      name="status"
                       value={formData.status}
-                      className="form-select bg-light border-0 py-2" 
-                      onChange={(e) => setFormData({...formData, status: e.target.value})}
+                      className="form-select bg-light border-0 py-2"
+                      onChange={(e) => setFormData({ ...formData, status: e.target.value })}
                     >
-                        <option value="select status" selected disabled>Select Status</option>
+                      <option value="select status" selected disabled>Select Status</option>
                       <option value="active">Active</option>
                       <option value="inactive">Inactive</option>
                     </select>

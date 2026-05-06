@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 
 function UserDashboard() {
+    const [token, setToken] = useState(localStorage.getItem('token'));
+    const [user, setUser] = useState(
+      JSON.parse(localStorage.getItem('user') || "null")
+    );
   const [items, setItems] = useState([
     { id: 1, title: "Design Landing Page", status: "In Progress", date: "24 April" },
     { id: 2, title: "Fix Navbar Bug", status: "Completed", date: "22 April" },
@@ -13,7 +17,7 @@ function UserDashboard() {
         
         <div className="row mb-5">
           <div className="col-lg-8">
-            <h2 className="fw-bold">Hello, Zeeshan! 👋</h2>
+            <h2 className="fw-bold">Hello, {user?.name} ! 👋</h2>
             <p className="text-muted">Welcome back! Here is what's happening with your account today.</p>
           </div>
           <div className="col-lg-4 text-lg-end">
@@ -38,7 +42,7 @@ function UserDashboard() {
                   <small>📷</small>
                 </button>
               </div>
-              <h5 className="fw-bold mb-1">Zeeshan Khan</h5>
+              <h5 className="fw-bold mb-1">{user?.name}</h5>
               <p className="text-muted small">Full Stack Developer</p>
               <hr className="my-3 opacity-25" />
               <button className="btn btn-outline-primary btn-sm rounded-pill w-100">Edit Profile</button>
